@@ -6,17 +6,14 @@ const headers = {
     }
 };
 let ordersData = [];
-
-// ===== Init ===== //
 function init(){
-    get_order();
+    get_order()
 };
 init();
 
 function get_order(){
     axios.get(adminUrl,headers)
     .then(res=>{
-        console.log(res.data.orders);
         ordersData = res.data.orders;
         renderTableHtml();
         computed_orderNum();
@@ -27,7 +24,6 @@ function get_order(){
 
 // ===== Order List ===== //
 const orderTable = document.querySelector(".orderPage-table");
-// const orderTableHeader = document.querySelector(".orderPage-table-header")
 const deleteAllBtn = document.querySelector(".discardAllBtn");
 function renderTableHtml(){
     orderTable.innerHTML = "";
@@ -168,6 +164,7 @@ deleteAllBtn.addEventListener('click',function(){
 // TODO: create a section to filter paid/unpaid orders
 // TODO: hover on the pie chart to see the income of each section
 // TODO: showing the total profit beside the chart
+
 // ===== Pie Chart===== //
 let products = {};
 let chartColumn = [];
@@ -204,7 +201,6 @@ function computed_orderNum(){
         otherArr = ['其他', otherSum]
     })
     sortedColumn.push(otherArr)
-    console.log(sortedColumn)
 };
 
 function renderChart(){
