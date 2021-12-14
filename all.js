@@ -198,11 +198,10 @@ Cart.prototype.addToCart = function(id){
     })
     .catch(err=>console.error(err))
 }
-// FIXME: the qtyfield would still be edited/focused when it's not in editMode
 
 Cart.prototype.editCartItem = function(id,index){
     // trigger contenteditable on the table-list
-    let qtyField = document.querySelectorAll(".product-qty");
+    const qtyField = document.querySelectorAll(".product-qty");
     qtyField.forEach(item=>{
         if(item.getAttribute("data-index") === index){            
             item.classList.toggle('editing');
@@ -217,7 +216,6 @@ Cart.prototype.editCartItem = function(id,index){
 
     function editModeOn(item,id){
         let currentProductQty = item.firstChild.value;
-        // FIXME: since the 'focus' event has been listening, so it should be remove to avoid firing
         item.firstChild.addEventListener('focus',function (){
             item.firstChild.removeAttribute("readonly");
             item.firstChild.value = null;
@@ -236,6 +234,7 @@ Cart.prototype.editCartItem = function(id,index){
             }
             // if the qty has been changed, post it to api
             else{
+                cursorStatus(false);
                 currentProductQty = Number(item.firstChild.value);
                 // post the data to api
                 axios.patch(`${url}carts`,{
@@ -250,6 +249,7 @@ Cart.prototype.editCartItem = function(id,index){
                     cart.computed_cartSum();
                     cart.renderHTML();
                     showPopInfo('商品數量已經更新成功！！')
+                    cursorStatus(true)
                 })
             }
             item.firstChild.setAttribute("readonly",true);
@@ -258,7 +258,6 @@ Cart.prototype.editCartItem = function(id,index){
     };
     function editModeOff(item){
         item.firstChild.setAttribute("readonly",true);
-        // item.firstChild.removeEventListener('focus',function(){});
     };
 };
 
@@ -436,4 +435,13 @@ function showAlertInfo(txt){
     <button class="btn-return">否</button>
     `
     popupInfo.classList.add("show",'alert');
+}
+
+function cursorStatus(val){
+    if(!val){
+        document.body.style.pointerEvents = "none";
+        return    
+    }
+    document.body.style.pointerEvents = "auto";
+    
 }

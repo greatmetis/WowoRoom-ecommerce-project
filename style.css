@@ -731,8 +731,8 @@ body {
 .shoppingCart-table .product-qty {
 }
 
-.shoppingCart-table .product-qty.editing {
-  border: 2px dashed #6933ff90;
+.shoppingCart-table .product-qty.editing input {
+  border: 1px dashed #6933ff90;
   outline: none;
 }
 
@@ -741,7 +741,7 @@ body {
   border: none;
   background-color: transparent;
   font-size: 1.25rem;
-  padding: 0;
+  padding: 4px;
   margin: 0;
   width: 50%;
 }
