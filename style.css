@@ -728,8 +728,6 @@ body {
 .shoppingCart-table .shoppingCart-empty {
   color: #747474;
 }
-.shoppingCart-table .product-qty {
-}
 
 .shoppingCart-table .product-qty.editing input {
   border: 1px dashed #6933ff90;
@@ -900,12 +898,29 @@ body {
   -ms-flex-direction: column;
   flex-direction: column;
 }
-
-.orderPage-list .discardAllBtn {
-  -ms-flex-item-align: end;
-  align-self: flex-end;
+.orderPage-list .orderTable-input-group {
+  /* padding: 60px 10px; */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 12px;
 }
+.orderPage-list .orderTable-input-group .order-status {
+  display: inline-block;
+  padding: 5px 15px;
+  background-color: transparent;
+  color: #000000;
+  border: 1.3px solid #000000;
+  border-radius: 5px;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+/* .orderPage-list .orderTable-input-group .discardAllBtn {
+  -ms-flex-item-align: end;
+  align-self: flex-end;
+} */
 
 .orderPage-table {
   border: 1px solid #000000;

@@ -142,6 +142,7 @@ Cart.prototype.renderHTML = function(){
                 return
             });
             returnBtn.addEventListener('click',function(){
+                popupInfo.classList.remove("show");
                 return 
             });
             

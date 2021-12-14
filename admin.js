@@ -1,5 +1,6 @@
 const adminUrl = 'https://livejs-api.hexschool.io/api/livejs/v1/admin/metisteng/orders';
 const token = 'MivHYzzmsmQkLmryd11vj2SqdGS2';
+const popupInfo = document.querySelector(".popup-info");
 const headers = {
     headers:{
         "Authorization":token
@@ -18,7 +19,7 @@ function get_order(){
     .then(res=>{
         console.log(res.data.orders);
         ordersData = res.data.orders;
-        renderTableHtml();
+        renderTableHtml(ordersData);
         computed_orderNum();
         renderChart();
     })
@@ -29,7 +30,7 @@ function get_order(){
 const orderTable = document.querySelector(".orderPage-table");
 // const orderTableHeader = document.querySelector(".orderPage-table-header")
 const deleteAllBtn = document.querySelector(".discardAllBtn");
-function renderTableHtml(){
+function renderTableHtml(arr){
     orderTable.innerHTML = "";
     let orderTableHeader = /*html*/`
         <thead class="orderPage-table-header">
@@ -46,7 +47,7 @@ function renderTableHtml(){
         </thead>`
         orderTable.innerHTML = orderTableHeader;
 
-    ordersData.forEach((item,index)=>{
+    arr.forEach((item,index)=>{
         let newRow = document.createElement("tr");
         let newInner = /*html*/ `
         <td>${item.id}</td>
@@ -136,7 +137,7 @@ function edit_paidStatus(id){
     },headers)
     .then(res=>{
         ordersData = res.data.orders;
-        renderTableHtml();
+        renderTableHtml(ordersData);
     })
     .catch(err=>console.error(err))
 };
@@ -148,7 +149,7 @@ function deleteOrder(id){
     .then(res=>{
         console.log(res.data.orders);
         ordersData = res.data.orders;
-        renderTableHtml();
+        renderTableHtml(ordersData);
     })
     .catch(err=>console.log(err));
 };
@@ -162,10 +163,33 @@ function deleteOrder_all(){
 };
 
 deleteAllBtn.addEventListener('click',function(){
-    deleteOrder_all()
+    showAlertInfo('你確定要清除全部清單？這個動作無法被回復喔！')
+    const confirmBtn = document.querySelector(".btn-confirm");
+    const returnBtn = document.querySelector(".btn-return");
+    confirmBtn.addEventListener('click',()=>deleteOrder_all())
+    returnBtn.addEventListener('click',()=>{
+        popupInfo.classList.remove("show");
+        return
+    })
 });
 
 // TODO: create a section to filter paid/unpaid orders
+const orderStatus = document.querySelector(".order-status");
+orderStatus.addEventListener('change',function(){
+    let filteredVal = orderStatus.value
+    let filteredBooleanVal = filteredVal.toLowerCase() == 'true' ? true : false;
+    let filteredData = [];
+
+    if(filteredVal=="all"){
+        filteredData = ordersData
+        renderTableHtml(filteredData);
+        return filteredData
+    }
+    filteredData = ordersData.filter(item=>item.paid == filteredBooleanVal);
+    renderTableHtml(filteredData);
+})
+
+
 // TODO: hover on the pie chart to see the income of each section
 // TODO: showing the total profit beside the chart
 // ===== Pie Chart===== //
@@ -221,5 +245,30 @@ function renderChart(){
 
 };
 
+// ===== Reusable functions ===== //
+function showPopInfo(txt){
+    popupInfo.innerHTML=/*html*/`<p>${txt}</p>`
+    popupInfo.classList.add("show");
+    setTimeout(function(){
+        popupInfo.classList.remove("show");
+    },3000)
+    return 
+}
 
+function showAlertInfo(txt){
+    popupInfo.innerHTML=/*html*/
+    `<p>${txt}</p>
+    <button class="btn-confirm">是</button>
+    <button class="btn-return">否</button>
+    `
+    popupInfo.classList.add("show",'alert');
+}
 
+function cursorStatus(val){
+    if(!val){
+        document.body.style.pointerEvents = "none";
+        return    
+    }
+    document.body.style.pointerEvents = "auto";
+    
+}
