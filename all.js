@@ -421,6 +421,7 @@ orderBtn.addEventListener('click',function(e){
 
 // ===== Reusable functions ===== //
 function showPopInfo(txt){
+    popupInfo.classList.remove("alert");
     popupInfo.innerHTML=/*html*/`<p>${txt}</p>`
     popupInfo.classList.add("show");
     setTimeout(function(){

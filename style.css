@@ -887,6 +887,31 @@ body {
 /*=========Admin Page=======*/
 /*=========================*/
 
+/*======= Charts =======*/
+.charts {
+  width: 100%;
+  display: flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+}
+.charts .pie-chart {
+  width: 60%;
+}
+.charts .gauge-chart {
+  width: 40%;
+}
+.charts .gauge-chart h3 {
+  font-size: 1rem;
+}
+.charts .gauge-chart #gauge {
+  margin-top: auto;
+}
 /*=======Order Page=======*/
 .orderPage-list {
   padding: 60px 10px;
