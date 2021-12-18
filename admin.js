@@ -17,7 +17,6 @@ init();
 function get_order(){
     axios.get(adminUrl,headers)
     .then(res=>{
-        console.log(res.data.orders);
         ordersData = res.data.orders;
         renderTableHtml(ordersData);
         renderChart();
@@ -76,7 +75,7 @@ function renderTableHtml(arr){
         orderTable.append(newRow);
         // Add prodcut tags
         addTableContents(item,index);
-    })
+    });
     // Add event listener
     const delSingleOrder = document.querySelectorAll(".delSingleOrder-Btn");
         delSingleOrder.forEach(btn=>{
@@ -84,7 +83,7 @@ function renderTableHtml(arr){
                 let currentId = btn.getAttribute("data-id")
                 deleteOrder(currentId)
             })
-    })
+    });
 
     const orderStatusBtn = document.querySelectorAll(".orderStatus button")
     orderStatusBtn.forEach(btn=>{
@@ -92,7 +91,7 @@ function renderTableHtml(arr){
             let currentId = btn.getAttribute("data-id");
             edit_paidStatus(currentId);
         })
-    })
+    });
 }
 
 function addTableContents(item,index){
@@ -151,12 +150,11 @@ function edit_paidStatus(id){
 
 // Delete a single Order
 function deleteOrder(id){
-    console.log('delete',id);
     axios.delete(`${adminUrl}/${id}`,headers)
     .then(res=>{
-        console.log(res.data.orders);
         ordersData = res.data.orders;
         renderTableHtml(ordersData);
+        renderChart();
     })
     .catch(err=>console.log(err));
 };
@@ -184,7 +182,7 @@ deleteAllBtn.addEventListener('click',function(){
     })
 });
 
-// create a section to filter paid/unpaid orders
+// filter paid/unpaid orders
 const orderStatus = document.querySelector(".order-status");
 orderStatus.addEventListener('change',function(){
     let filteredVal = orderStatus.value
@@ -201,53 +199,53 @@ orderStatus.addEventListener('change',function(){
     renderTableHtml(filteredData);
 })
 
-// TODO: hover on the pie chart to see the income of each section
-// TODO: showing the total profit beside the chart
 // ===== Pie Chart===== //
-let products = {};
-let chartColumn = [];
+const totalProfit = document.querySelector(".total-profit");
+
 let sortedColumn = [];
 function computed_orderNum(){
+    let products = {};
+    let chartColumn = [];
     if(ordersData.length == 0){
         return
     }
-    if(ordersData.length == 1){
-        chartColumn = [ordersData[0].products[0].title,ordersData[0].quantity]
-        sortedColumn.push(chartColumn);
-        console.log(sortedColumn)
-        return
-    }
-    // get qty of each product
+    // get profit of each product
     ordersData.forEach(order=>{
         order.products.forEach(product=>{
+            let productPrice = product.price;
+            let productQuantity = product.quantity;
         if(!products[product.title]){
-            products[`${product.title}`] = 0;
-            products[`${product.title}`] += product.quantity;
+            products[`${product.title}`] = productPrice * productQuantity;
             return
         }
-        products[`${product.title}`] += product.quantity
+        products[`${product.title}`] += productPrice * productQuantity;
     })
     })
-    // convert obj into arr
+    // convert obj into arr && calculate the total profit
     let keys = Object.keys(products);
+    let totalProfitNum = 0; 
     keys.forEach(key=>{
-        let productQty = products[key]
-        let newArr = [key,productQty]
-        chartColumn.push(newArr)
-
+        let productTotalPrice = products[key];
+        let newArr = [key,productTotalPrice];
+        chartColumn.push(newArr);
+        totalProfitNum += productTotalPrice;
     })
+    totalProfit.textContent = `目前營收$${totalProfitNum}` // showing the total profit beside the chart
+
     // Sort Descending
     sortedColumn = chartColumn.sort((a,b)=>b[1] - a[1]);
     
-    // Sort products to show from the frist to the forth 
-    sortedColumn = sortedColumn.slice(0,3);
-    let otherArr = chartColumn.slice(2);
-    let otherSum = 0;
-    otherArr.forEach(item=>{
-        otherSum += item[1]
-        otherArr = ['其他', otherSum]
-    })
-    sortedColumn.push(otherArr)
+    // Sort products to show from the frist to the forth if ordered products are greater than 4
+    if(chartColumn.length>4){
+        sortedColumn = sortedColumn.slice(0,3);
+        let otherArr = chartColumn.slice(2);
+        let otherSum = 0;
+        otherArr.forEach(item=>{
+            otherSum += item[1]
+            otherArr = ['其他', otherSum]
+        })
+        sortedColumn.push(otherArr);
+    }
 };
 
 function renderChart(){
@@ -260,7 +258,7 @@ function renderChart(){
         },
         color:{
             pattern:['#A640FF','#7124E0','#6A33F8','#4224E0','#6D67FA']
-        }
+        },
     });
     renderGauge()
 };

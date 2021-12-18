@@ -903,6 +903,10 @@ body {
 .charts .pie-chart {
   width: 60%;
 }
+.charts .pie-chart .total-profit {
+  text-align: center;
+  margin-bottom: 1rem;
+}
 .charts .gauge-chart {
   width: 40%;
 }
@@ -912,6 +916,7 @@ body {
 .charts .gauge-chart #gauge {
   margin-top: auto;
 }
+
 /*=======Order Page=======*/
 .orderPage-list {
   padding: 60px 10px;
