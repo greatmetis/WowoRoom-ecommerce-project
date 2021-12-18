@@ -59,7 +59,7 @@ Cart.prototype.renderHTML = function(){
     if(this.cartItems.length === 0){
         let cartEmptyInfo = /*html*/`
         <tr class="shoppingCart-empty">
-            <th>還是空的...</th>
+            <th>怎麼會還是空的...</th>
         </tr>
         `
         shoppingCartTable.innerHTML = cartEmptyInfo;
@@ -397,6 +397,8 @@ Form.prototype.postOrder = function(){
             console.log(res.data)
             showPopInfo('我們已經收到你的訂單！您的商品預計7天內送達 ;)')
             form.reset();
+            cart.cartItems = [];
+            cart.renderHTML();
         })
         .catch(err=>console.error(err));
     }
@@ -415,7 +417,6 @@ orderBtn.addEventListener('click',function(e){
     e.preventDefault();
     let newOrder = new Form;
     newOrder.postOrder(e);
-
 })
 
 
