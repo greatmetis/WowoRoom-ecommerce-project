@@ -394,7 +394,6 @@ Form.prototype.postOrder = function(){
     if(this.validation){
         axios.post(`${url}orders`,this.orderForm)
         .then(res=>{
-            console.log(res.data)
             showPopInfo('我們已經收到你的訂單！您的商品預計7天內送達 ;)')
             form.reset();
             cart.cartItems = [];
