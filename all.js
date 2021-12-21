@@ -230,8 +230,11 @@ Cart.prototype.editCartItem = function(id,index){
 
         item.firstChild.addEventListener('blur',function(){
             // if the qty didn't be changed, give it the original value
-            if(!item.firstChild.value){
+            if(!item.firstChild.value || item.firstChild.value==item.firstChild.placeholder){
                 item.firstChild.value = item.firstChild.placeholder
+            }else if(item.firstChild.value == 0){
+                item.firstChild.value = 1;
+                showPopInfo('數量最少必須1件');
             }
             // if the qty has been changed, post it to api
             else{
