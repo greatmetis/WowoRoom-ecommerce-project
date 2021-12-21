@@ -28,7 +28,7 @@ function get_cartsApiData(){
     axios.get(`${url}carts`)
     .then(res=>{
         cartDatabase= res.data.carts;
-        cart = new Cart(cartDatabase);
+        cart = new Cart();
         cart.renderHTML();
     })
     .catch(err=>console.error(err))
@@ -37,17 +37,16 @@ function get_cartsApiData(){
 // ===== Cart ===== //
 const shoppingCartTable = document.querySelector(".shoppingCart-table");
 
-function Cart(data){
-    this.cartItems = data;
+function Cart(){
     this.cartSum = this.computed_cartSum();
 }
 
 Cart.prototype.computed_cartSum = function(){
-    if(this.cartItems.length===0){
+    if(cartDatabase.length===0){
         this.cartSum = 0;
         return this.cartSum;
     }
-    let cartPriceArr = this.cartItems.map(item=>item.product.price*item.quantity);
+    let cartPriceArr = cartDatabase.map(item=>item.product.price*item.quantity);
     this.cartSum = cartPriceArr.reduce(function(total,num){
         return total + num
     })
@@ -56,7 +55,7 @@ Cart.prototype.computed_cartSum = function(){
 
 Cart.prototype.renderHTML = function(){
     // Show notification if the cart is empty
-    if(this.cartItems.length === 0){
+    if(cartDatabase.length === 0){
         let cartEmptyInfo = /*html*/`
         <tr class="shoppingCart-empty">
             <th>怎麼會還是空的...</th>
@@ -92,7 +91,7 @@ Cart.prototype.renderHTML = function(){
     
     const shoppingCartHeader = document.querySelector(".shoppingCart-header");
     const shoppingCartTotal = document.querySelector(".shoppingCart-total");
-    this.cartItems.forEach((d,i)=>{
+    cartDatabase.forEach((d,i)=>{
         let totalPriceForProduct = d.quantity * d.product.price;
         let newRow = document.createElement("tr");
         let cartHtml = /*html*/`
@@ -105,7 +104,7 @@ Cart.prototype.renderHTML = function(){
         <td>NT$${d.product.price}</td>
         <td class="product-qty" data-index="${i}"><input readonly="true" type="number" placeholder="${d.quantity}" value="${d.quantity}"/></td>
         <td>NT$${totalPriceForProduct}</td>
-        <td class="cartBtn" data-index="${i}" data-id="${d.id}"">
+        <td class="cartBtn" data-index="${i}" data-id="${d.id}">
             <button class="editBtn material-icons">
                 edit
             </button>
@@ -153,8 +152,7 @@ Cart.prototype.renderHTML = function(){
 Cart.prototype.deleteCartItem = function(id){
     axios.delete(`${url}carts/${id}`)
     .then(res=>{
-        this.cartDatabase = res.data.carts;
-        this.cartItems = this.cartDatabase;
+        cartDatabase = res.data.carts;
         this.computed_cartSum();
         this.renderHTML();
     })
@@ -167,7 +165,6 @@ Cart.prototype.deleteCartAll = function(){
     axios.delete(`${url}carts`)
     .then(res=>{
         cartDatabase = res.data.carts;
-        this.cartItems = cartDatabase;
         this.computed_cartSum();
         this.renderHTML();
         showPopInfo('購物車已經清空！')
@@ -177,8 +174,8 @@ Cart.prototype.deleteCartAll = function(){
 
 Cart.prototype.addToCart = function(id){
     // check if the selected item has in the cart
-    if(this.cartItems.length !== 0){
-        this.cartItems.forEach(item=>{
+    if(cartDatabase.length !== 0){
+        cartDatabase.forEach(item=>{
         if(item.product.id === id){
             showPopInfo('此項商品已在購物車囉！')
         }
@@ -193,7 +190,6 @@ Cart.prototype.addToCart = function(id){
     })
     .then(res=>{
         cartDatabase = res.data.carts;
-        this.cartItems = cartDatabase;
         this.computed_cartSum();
         cart.renderHTML();
     })
