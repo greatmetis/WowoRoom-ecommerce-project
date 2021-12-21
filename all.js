@@ -213,15 +213,13 @@ Cart.prototype.editCartItem = function(id,index){
 
     function editModeOn(item,id){
         let currentProductQty = item.firstChild.value;
-        item.firstChild.addEventListener('focus',function (){
-            item.firstChild.removeAttribute("readonly");
+        item.firstChild.removeAttribute("readonly");
             item.firstChild.value = null;
             // set Enter key as a method to complete editing
             item.firstChild.addEventListener('keyup',function(e){
             if(e.key=="Enter"){
                 item.firstChild.blur();
             }
-        })
         });
 
         item.firstChild.addEventListener('blur',function(){
